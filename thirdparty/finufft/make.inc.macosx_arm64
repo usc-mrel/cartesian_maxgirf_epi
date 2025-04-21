@@ -1,0 +1,45 @@
+# Makefile variable overrides for cross-compiling for ARM silicon via
+# clang on Mac OSX.
+#
+# This is used for CI.
+# Libin Lu 12/21/23.
+
+# compile flags for use with clang: (note absence of -march, etc)
+CFLAGS = -O3 -arch arm64 -target arm64-apple-macos11
+
+# If you're getting warning messages of the form:
+#    ld: warning: object file (lib-static/libfinufft.a(finufft1d.o)) was built for
+#    newer OSX version (10.13) than being linked (10.9)
+# Then you can uncomment the following two lines with the older version number
+# (in this example -mmacosx-version-min=10.9)
+#
+#CFLAGS += "-mmacosx-version-min=<OLDER OSX VERSION NUMBER>"
+
+CXX=clang++
+CC=clang
+
+# assuming libomp and fftw are installed through homebrew
+OMP_ROOT = $(shell brew --prefix libomp)
+FFTW_ROOT = $(shell brew --prefix fftw)
+
+# taken from makefile...
+CFLAGS   += -I include -I/usr/local/include -I$(OMP_ROOT)/include -I$(FFTW_ROOT)/include
+FFLAGS   = $(CFLAGS)
+CXXFLAGS = $(CFLAGS)
+LIBS += -L/usr/local/lib -L$(OMP_ROOT)/lib -L$(FFTW_ROOT)/lib
+LDFLAGS += -arch arm64 -target arm64-apple-macos11
+
+# OpenMP with clang needs following...
+OMPFLAGS = -Xpreprocessor -fopenmp
+OMPLIBS = -lomp
+# since fftw3_omp doesn't work in OSX, we need...
+FFTWOMPSUFFIX=threads
+
+# MATLAB interface: this will probably segfault. Instead we suggest you use
+# make.inc.macosx_clang_matlab
+
+# Some of these will depend on your FFTW library location...
+MFLAGS += -I/usr/local/include -I/opt/homebrew/include -L/usr/local/lib -L/opt/homebrew/lib -lm
+# may need to edit for your MATLAB version location...
+MEX = $(shell ls -d /Applications/MATLAB_R20**.app)/bin/mex
+# Also see docs/install.rst for possible edits to MATLAB's MEX XML file.

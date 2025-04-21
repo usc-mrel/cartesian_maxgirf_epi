@@ -1,0 +1,11 @@
+if(FINUFFT_USE_CPU)
+    if (WIN32)
+        install(TARGETS finufft LIBRARY DESTINATION finufft RUNTIME DESTINATION finufft)
+    else ()
+        install(TARGETS finufft LIBRARY DESTINATION finufft)
+    endif ()
+endif()
+
+if(FINUFFT_USE_CUDA)
+    install(TARGETS cufinufft LIBRARY DESTINATION cufinufft)
+endif()
