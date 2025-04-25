@@ -1,4 +1,4 @@
-# cartesian_maxgirf_epi
+# cartesian_maxgirf_epi_2d
 
 This repository contains MATLAB code for
 **"Cartesian MaxGIRF: Model-based EPI reconstruction incorporating gradient nonlinearity and concomitant field effects"**, by Nam G. Lee, Sophia X. Cui, and Krishna S. Nayak.
